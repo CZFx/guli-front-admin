@@ -10,5 +10,14 @@ export default{
             //data表示对象转换成json进行传递到接口里面
             data:teacherQuery
         })
+    },
+    //添加讲师
+    addTeacher(teacher){
+        return request({
+            url:'/eduservice/teacher/addTeacher',
+            method:'post',
+            data:teacher
+        })
+
     }
 }
