@@ -31,10 +31,11 @@
         <el-button :disabled="saveBtnDisabled" type="primary" @click="saveOrUpdate">保存</el-button>
       </el-form-item>
     </el-form>
-    </div>  
+    </div>
 </template>
+
 <script>
-import teacher from '@/api/edu/teacher'
+import teacherApi from '@/api/edu/teacher'
 export default {
   data(){
     return {
@@ -50,12 +51,11 @@ export default {
       }
     },
     created() {
-
     },
     methods:{
       saveOrUpdate(){
         //添加
-        this.saveTeacher
+        this.saveTeacher()
       },
       //添加讲师的方法
       saveTeacher(){
@@ -71,6 +71,6 @@ export default {
         })
       }
     }
-  
+
 }
 </script>

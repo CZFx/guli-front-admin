@@ -1,4 +1,4 @@
-import request from '@/utils/request' 
+import request from '@/utils/request'
 export default{
     //1.讲师列表（条件查询分页）
     //current当前页 limit每页记录数 teacherQuery条件对象
@@ -14,7 +14,7 @@ export default{
     //添加讲师
     addTeacher(teacher){
         return request({
-            url:'/eduservice/teacher/addTeacher',
+            url:`/eduservice/teacher/addTeacher`,
             method:'post',
             data:teacher
         })
