@@ -10,10 +10,6 @@
       </el-form-item>
       <el-form-item label="讲师头衔">
         <el-select v-model="teacher.level" clearable placeholder="请选择">
-          <!--
-            数据类型一定要和取出的json中的一致，否则没法回填
-            因此，这里value使用动态绑定的值，保证其数据类型是number
-          -->
           <el-option :value="1" label="高级讲师"/>
           <el-option :value="2" label="首席讲师"/>
         </el-select>
@@ -47,7 +43,7 @@ export default {
          intro: '',
          avatar: ''
         },
-        saveBtnDisabled:false
+      saveBtnDisabled:false // 保存按钮是否禁用,
       }
     },
     created() {
@@ -60,7 +56,7 @@ export default {
       //添加讲师的方法
       saveTeacher(){
         teacherApi.addTeacher(this.teacher)
-        .then(response=>{//添加成功
+         .then(response=>{//添加成功
         //提示信息
         this.$message({
           type:'success',

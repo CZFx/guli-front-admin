@@ -11,6 +11,13 @@ export default{
             data:teacherQuery
         })
     },
+  //删除讲师
+  deleteTeacherId(id){
+    return request({
+      url:`/eduservice/teacher/${id}`,
+      method:'delete',
+    })
+  },
     //添加讲师
     addTeacher(teacher){
         return request({
