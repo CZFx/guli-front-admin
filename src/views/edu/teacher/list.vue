@@ -80,7 +80,7 @@
       :total="total"
       style="padding: 30px 0; text-align: center;"
       layout="total, prev, pager, next, jumper"
-      @current-change="fetchData"
+      @current-change="getList"
     />
     </div>
 </template>
