@@ -6,7 +6,7 @@
         <el-input v-model="teacher.name"/>
       </el-form-item>
       <el-form-item label="讲师排序">
-        <el-input-number v-model="teacher.sort" controls-position="right" min="0"/>
+        <el-input-number v-model="teacher.sort" controls-position="right" :min="0"/>
       </el-form-item>
       <el-form-item label="讲师头衔">
         <el-select v-model="teacher.level" clearable placeholder="请选择">
@@ -50,12 +50,47 @@ export default {
         saveBtnDisabled:false
       }
     },
-    created() {
+    created() { //页面渲染前执行
+      //判断路径是否有id值
+      if(this.$route.params&&this.$route.params.id){
+        //从路径获取id
+        const id =this.$route.params.id
+        //调用根据id查询的办法
+        this.getInfo(id)
+      }
     },
     methods:{
+    //根据讲师id查询的方法
+      getInfo(id){
+        teacherApi.getTeacherInfo(id)
+          .then(response =>{
+            this.teacher=response.data.teacher
+          })
+      },
       saveOrUpdate(){
-        //添加
-        this.saveTeacher()
+        //判断修改还是添加
+        //根据teacher是否有id
+        if(!this.teacher.id){
+          //添加
+          this.saveTeacher()
+        }
+        else{
+          //修改
+          this.updateTeacher()
+        }
+      },
+      //修改讲师的方法
+      updateTeacher(){
+        teacherApi.updateTeacherInfo(this.teacher)
+        .then(response =>{
+            //提示信息
+          this.$message({
+            type:'success',
+            message:'修改成功！'
+          });
+          //回到列表页面，路由跳转
+          this.$router.push({path:'/teacher/table'})
+        })
       },
       //添加讲师的方法
       saveTeacher(){
