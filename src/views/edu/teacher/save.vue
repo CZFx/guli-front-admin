@@ -47,15 +47,27 @@ export default {
     }
   },
   created() { // 页面渲染前执行
-    // 判断路径是否有id值
-    if (this.$route.params && this.$route.params.id) {
-      // 从路径获取id
-      const id = this.$route.params.id
-      // 调用根据id查询的办法
-      this.getInfo(id)
+    this.init()
+  },
+  watch: {//监听
+    $route(to, from) {//路有变化方式，路由发生变化 方法就会执行
+    this.init()
     }
   },
   methods: {
+    init(){
+      // 判断路径有id值,做修改
+      if (this.$route.params && this.$route.params.id) {
+        // 从路径获取id
+        const id = this.$route.params.id
+        // 调用根据id查询的办法
+        this.getInfo(id)
+      }else{//路径没有id值，做添加
+        //清空表单
+        this.teacher={}
+
+      }
+    },
     // 根据讲师id查询的方法
     getInfo(id) {
       teacherApi.getTeacherInfo(id)
