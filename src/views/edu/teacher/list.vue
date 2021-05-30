@@ -88,7 +88,7 @@
 <script>
 //引入调用teacher.js文件
 import teacher from '@/api/edu/teacher'
-export default ({
+export default{
   data(){ //定义变量和初始值
     return{
       list:null,//查询之后接口返回集合
@@ -117,7 +117,29 @@ export default ({
         .catch(error =>{
           console.log(error)
         }) //请求失败
+    },
+    //删除讲师的方法
+    removeDataById(id){
+      this.$confirm('此操作将永久删除讲师记录，是否继续?','提示',{
+        confirmButtonText:'确定',
+        cancelButtonText:'取消',
+        type:'warning'
+      }).then(()=>{//点击确定，执行then方法
+        //调用删除的方法
+        teacher.deleteTeacherId(id)
+        .then(response=>{
+          //删除成功
+          //提示信息
+          this.$message({
+            type:'success',
+            message:'删除成功！'
+          });
+          //回到列表页面
+          this.getList()
+        })
+
+        })//点击取消，执行catch 方法
     }
   }
-})
+}
 </script>
