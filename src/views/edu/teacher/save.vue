@@ -94,7 +94,7 @@ export default {
     cropSuccess(data){//上传成功方法
       this.imagecropperShow = false
       //上传之后接口返回图片的地址
-      this.teacher.avatar = data.url 
+      this.teacher.avatar = data.url
     },
     init(){
       // 判断路径有id值,做修改
@@ -106,7 +106,6 @@ export default {
       }else{//路径没有id值，做添加
         //清空表单
         this.teacher={}
-
       }
     },
     // 根据讲师id查询的方法
