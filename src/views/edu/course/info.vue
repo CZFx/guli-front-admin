@@ -19,6 +19,17 @@
       <!-- 所属分类 TODO -->
 
       <!-- 课程讲师 TODO -->
+      <el-form-item label="课程讲师">
+        <el-select
+          v-model="courseInfo.teacherId"
+          placeholder="请选择">
+          <el-option
+            v-for="teacher in teacherList"
+            :key="teacher.id"
+            :label="teacher.name"
+            :value="teacher.id"/>
+        </el-select>
+      </el-form-item>
 
       <el-form-item label="总课时">
         <el-input-number :min="0" v-model="courseInfo.lessonNum" controls-position="right" placeholder="请填写课程的总课时数"/>
@@ -55,13 +66,21 @@ export default {
         description: '',
         cover: '',
         price: 0
-      }
+      },
+      teacherList:[]
     }
   },
   created(){
-
+    this.getListTeacher()
   },
   methods:{
+    //查询所有的讲师
+    getListTeacher() {
+      course.getListTeacher()
+        .then(response=>{
+         this.teacherList= response.data.items;
+        })
+    },
     saveOrUpdate(){
       course.addCourseInfo(this.courseInfo)
         .then(response=>{

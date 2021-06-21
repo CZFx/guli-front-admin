@@ -7,5 +7,12 @@ export default{
       method:'post',
       data:courseInfo
     })
+  },
+  //2.查询所有讲师
+  getListTeacher(){
+    return request({
+      url:'/eduservice/teacher/getAll',
+      method:'get',
+    })
   }
 }
