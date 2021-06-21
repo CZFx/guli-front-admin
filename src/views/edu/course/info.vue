@@ -17,7 +17,25 @@
       </el-form-item>
 
       <!-- 所属分类 TODO -->
-
+      <el-form-item label="课程分类">
+        <el-select
+          v-model="courseInfo.subjectParentId"
+          placeholder="一级分类" @change="subjectLevelOneChanged">
+          <el-option
+            v-for="subject in subjectOneList"
+            :key="subject.id"
+            :label="subject.title"
+            :value="subject.id"/>
+        </el-select>
+        <!-- 二级分类 -->
+        <el-select v-model="courseInfo.subjectId" placeholder="二级分类">
+          <el-option
+            v-for="subject in subjectTwoList"
+            :key="subject.id"
+            :label="subject.title"
+            :value="subject.id"/>
+        </el-select>
+      </el-form-item>
       <!-- 课程讲师 TODO -->
       <el-form-item label="课程讲师">
         <el-select
@@ -41,6 +59,18 @@
       </el-form-item>
 
       <!-- 课程封面 TODO -->
+      <el-form-item label="课程封面">
+
+        <el-upload
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+          :action="BASE_API+'/eduoss/fileoss'"
+          class="avatar-uploader">
+          <img :src="courseInfo.cover">
+        </el-upload>
+
+      </el-form-item>
 
       <el-form-item label="课程价格">
         <el-input-number :min="0" v-model="courseInfo.price" controls-position="right" placeholder="免费课程请设置为0元"/> 元
@@ -54,26 +84,66 @@
 </template>
 <script>
 import course from '@/api/edu/course'
+import subject from '@/api/edu/subject'
 export default {
   data(){
     return{
       saveBtnDisabled:false,
       courseInfo:{
         title: '',
-        subjectId: '',
+        subjectId: '',//二级分类id
+        subjectParentId:'',//一级分类id
         teacherId: '',
         lessonNum: 0,
         description: '',
-        cover: '',
+        cover: '/static/01.jpg',
         price: 0
       },
-      teacherList:[]
+      BASE_API: process.env.BASE_API ,// 接口API地址
+      teacherList:[],
+      subjectOneList:[],
+      subjectTwoList:[]
     }
   },
   created(){
     this.getListTeacher()
+    this.getOneSubject()
   },
   methods:{
+    //上传封面成功
+    handleAvatarSuccess(res, file) {
+      this.courseInfo.cover=res.data.url
+    },
+    //上传之前
+    beforeAvatarUpload(file){
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    //当点击某个一级分类，出发change，显示二级对象
+    subjectLevelOneChanged(value){
+      for(var i=0;i<this.subjectOneList.length;i++){
+        var oneSubject=this.subjectOneList[i]
+        if(value==oneSubject.id){
+          this.subjectTwoList=oneSubject.children
+          this.courseInfo.subjectId=''
+        }
+      }
+    },
+    //查询所有的一级分类
+    getOneSubject(){
+      subject.getSubjectList()
+        .then(response=>{
+          this.subjectOneList=response.data.list
+        })
+    },
     //查询所有的讲师
     getListTeacher() {
       course.getListTeacher()
