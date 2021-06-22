@@ -9,7 +9,7 @@ export default {
             data: video
           })
     },
-    
+
     //删除小节
     deleteVideo(id) {
         return request({
@@ -17,4 +17,11 @@ export default {
             method: 'delete'
           })
     },
+    //删除视频
+    deleteAliyunvod(id) {
+      return request({
+        url: '/eduvod/video/removeAlyVideo/'+id,
+        method: 'delete'
+      })
+    }
 }
