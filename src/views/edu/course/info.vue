@@ -16,7 +16,7 @@
         <el-input v-model="courseInfo.title" placeholder=" 示例：机器学习项目课：从基础到搭建项目视频课程。专业名称注意大小写"/>
       </el-form-item>
 
-      <!-- 所属分类 TODO -->
+      <!-- 所属分类  -->
       <el-form-item label="课程分类">
         <el-select
           v-model="courseInfo.subjectParentId"
@@ -36,7 +36,7 @@
             :value="subject.id"/>
         </el-select>
       </el-form-item>
-      <!-- 课程讲师 TODO -->
+      <!-- 课程讲师  -->
       <el-form-item label="课程讲师">
         <el-select
           v-model="courseInfo.teacherId"
@@ -53,12 +53,12 @@
         <el-input-number :min="0" v-model="courseInfo.lessonNum" controls-position="right" placeholder="请填写课程的总课时数"/>
       </el-form-item>
 
-      <!-- 课程简介 TODO -->
+      <!-- 课程简介-->
       <el-form-item label="课程简介">
-        <el-input v-model="courseInfo.description" placeholder=" "/>
+        <tinymce :height="300" v-model="courseInfo.description"/>
       </el-form-item>
 
-      <!-- 课程封面 TODO -->
+      <!-- 课程封面 -->
       <el-form-item label="课程封面">
 
         <el-upload
@@ -85,7 +85,9 @@
 <script>
 import course from '@/api/edu/course'
 import subject from '@/api/edu/subject'
+import Tinymce from '@/components/Tinymce'
 export default {
+  components: { Tinymce },
   data(){
     return{
       saveBtnDisabled:false,
@@ -106,10 +108,47 @@ export default {
     }
   },
   created(){
-    this.getListTeacher()
-    this.getOneSubject()
+
+    //获取路由id值
+    if(this.$route.params && this.$route.params.id) {
+      this.courseId = this.$route.params.id
+      //调用根据id查询课程的方法
+      this.getInfo()
+
+    } else {
+      //初始化所有讲师
+      this.getListTeacher()
+      //初始化一级分类
+      this.getOneSubject()
+    }
   },
   methods:{
+    //根据课程id查询
+    getInfo() {
+      course.getCourseInfoId(this.courseId)
+        .then(response => {
+          //在courseInfo课程基本信息，包含 一级分类id 和 二级分类id
+          this.courseInfo = response.data.courseInfoVo
+          //1 查询所有的分类，包含一级和二级
+          subject.getSubjectList()
+            .then(response => {
+              //2 获取所有一级分类
+              this.subjectOneList = response.data.list
+              //3 把所有的一级分类数组进行遍历，
+              for(var i=0;i<this.subjectOneList.length;i++) {
+                //获取每个一级分类
+                var oneSubject = this.subjectOneList[i]
+                //比较当前courseInfo里面一级分类id和所有的一级分类id
+                if(this.courseInfo.subjectParentId == oneSubject.id) {
+                  //获取一级分类所有的二级分类
+                  this.subjectTwoList = oneSubject.children
+                }
+              }
+            })
+          //初始化所有讲师
+          this.getListTeacher()
+        })
+    },
     //上传封面成功
     handleAvatarSuccess(res, file) {
       this.courseInfo.cover=res.data.url
@@ -167,3 +206,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.tinymce-container {
+  line-height: 29px;
+}
+</style>
