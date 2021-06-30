@@ -46,10 +46,18 @@ export default{
   },
 
   //课程最终发布
-  getListCourse() {
+  getListCourse(current, limit) {
     return request({
-      url: '/eduservice/course',
+      url: `/eduservice/course/getCoursePage/${current}/${limit}`,
       method: 'get'
+    })
+  },
+
+  // 删除课程
+  reomveCourse(courseId) {
+    return request({
+      url: `/eduservice/course/${courseId}`,
+      method: 'delete'
     })
   }
 

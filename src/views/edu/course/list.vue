@@ -49,13 +49,10 @@
 
       <el-table-column prop="viewCount" label="浏览数量" width="80" />
 
-      <el-table-column label="操作" width="500" align="center">
+      <el-table-column label="操作" width="300" align="center">
         <template slot-scope="scope">
-          <router-link :to="'/teacher/edit/'+scope.row.id">
-            <el-button type="primary" size="mini" icon="el-icon-edit">编辑课程基本信息</el-button>
-          </router-link>
-          <router-link :to="'/teacher/edit/'+scope.row.id">
-            <el-button type="primary" size="mini" icon="el-icon-edit">编辑课程大纲息</el-button>
+          <router-link :to="'/course/info/'+scope.row.id">
+            <el-button type="primary" size="mini" icon="el-icon-edit">编辑课程信息</el-button>
           </router-link>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeDataById(scope.row.id)">删除课程信息</el-button>
         </template>
@@ -93,11 +90,13 @@ export default {
   },
   methods:{  //创建具体的方法，调用course.js定义的方法
     //课程列表的方法
-    getList() {
-      course.getListCourse()
+    getList(page = 1) {
+      this.page = page
+      course.getListCourse(this.page, this.limit)
         .then(response =>{//请求成功
           //response接口返回的数据
-          this.list = response.data.list
+          this.list = response.data.list.records
+          this.total = response.data.list.total
         })
     },
     resetData() {//清空的方法
@@ -105,6 +104,16 @@ export default {
       this.courseQuery = {}
       //查询所有课程数据
       this.getList()
+    },
+    removeDataById(courseId) {
+      course.reomveCourse(courseId)
+        .then(response => {
+          this.$message({
+            type: 'success',
+            message: "删除成功"
+          })
+          this.getList(1)
+        })
     }
 
   }
